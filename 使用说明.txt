@@ -1,0 +1,26 @@
+ChemDraw -> Word 集成修复
+
+适用症状：
+- ChemDraw 结构复制/拖进 Word 后变成图片，无法双击编辑
+- Word 里 插入->对象->CS ChemDraw Drawing. 报错"用于创建此对象的程序是 ChemDraw，您的计算机尚未安装此程序或此程序无响应" 或报 "Class not licensed"
+
+用法（按顺序）：
+1) 双击 [诊断.bat]（不需要管理员，只读检查不动任何东西）
+   会在桌面生成《ChemDraw诊断报告.txt》。看"结论"和"[5] 默认打印机"：
+   - 结论"可修复"（报 80040112 或指向的文件打不开）-> 走第 2 步
+   - 结论"OLE 正常" -> 病因不在注册表，把报告发出来再议
+   - [5] 显示没有默认打印机 -> 去把默认打印机设置成 Microsoft Print to PDF 再重试
+
+2) 修复 [修复.bat]：运行前关闭已打开的Chemdraw窗口，建议【右键 -> 以管理员身份运行】
+   （直接双击会请求提权，点"是"；若窗口一闪而过没反应，就改用右键管理员运行）
+   - 显示"修复成功"：去 Word 里试 插入->对象->CS ChemDraw Drawing，或复制粘贴后双击
+   - 显示"本来就正常"：没病可修，看诊断报告找真凶
+   - 显示"修复后仍失败"：把桌面报告发出来
+
+第二步可用管理员命令行手动跑
+（等价操作，把 你的路径 换成[诊断.bat]中[1]的路径）：
+输入：cmd 回车
+输入：
+"你的路径" /regserver
+reg add "HKCR\CLSID\{41BA6D21-A02E-11CE-8FD9-0020AFD1F20C}\LocalServer32" /ve /d "\"D:\你的路径\ChemDraw\ChemDraw.exe\"" /f
+reg add "HKCR\CLSID\{8E56081F-2AC3-47D2-9DB6-2D4C4D86806A}\LocalServer32" /ve /d "\"D:\你的路径\ChemDraw\ChemDraw.exe\" /Automation" /f
